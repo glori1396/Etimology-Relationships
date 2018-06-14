@@ -1,0 +1,10 @@
+[
+  "test_queries.py::test_siblings_relation",
+  "test_queries.py::test_cousins_relation",
+  "test_queries.py::test_son_relation",
+  "test_queries.py::test_uncle_relation",
+  "test_queries.py::test_language_relation",
+  "test_queries.py::test_language_origin_relation",
+  "test_queries.py::test_list_languages_relation",
+  "test_queries.py::test_cont_common_words_relation"
+]
