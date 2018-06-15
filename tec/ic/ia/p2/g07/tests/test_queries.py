@@ -4,7 +4,7 @@ from tec.ic.ia.p2.g07.Queries import *
 knowledge = []
 tree = [['Ana', 'Rodrigo'], ['Juan', 'Rodrigo'], ['Rodrigo', 'Melissa'], ['Manuel', 'Roberto'], \
         ['Roberto', 'Julio'], ['Chris', 'Julio'], ['Julio', 'Melissa'], ['Melissa', 'Armando'], \
-        ['Erick', 'Tatiana'], ['Tatiana', 'Armando'], ['Tatiana', 'Armando2']]
+        ['Erick', 'Tatiana'], ['Tatiana', 'Armando']]
 
 def create_tree(knowledge):
     for rel in tree:
@@ -24,12 +24,11 @@ def test_cousins_relation():
     results = cousins_query('Erick', 'Julio')
     assert results != []
 
-# def test_cousins_2_level_relation():
-#     knowledge = []
-#     create_tree(knowledge)
-#     results = cousins_query('Roberto', 'Erick')
-#     print(results)
-#     assert results == []
+def test_cousins_2_level_relation():
+    knowledge = []
+    create_tree(knowledge)
+    results = cousins_query('Erick', 'Roberto')
+    assert results != []
 
 def test_son_relation():
     knowledge = []
@@ -63,7 +62,43 @@ def test_list_languages_relation():
 
 def test_cont_common_words_relation():
     knowledge = []
-    create_tree(knowledge)
-    results = cont_common_words('lang_example_1', 'lang_example_2')
-    print(results)
-    assert results == []
+    #create_tree(knowledge)
+    knowledge.append(Relation('afr','hola', 'relation','esp', 'di'))
+    knowledge.append(Relation('afl','hola', 'relation','esp2', 'di2'))
+    knowledge.append(Relation('afr','hola2', 'relation','esp', 'di'))
+    knowledge.append(Relation('afl','hola2', 'relation','esp2', 'di2'))
+    _,results = cont_common_words_query('afr', 'afl')
+    assert results != []
+
+def test_list_common_words_relation():
+    knowledge = []
+    #create_tree(knowledge)
+    knowledge.append(Relation('afr','hola', 'relation','esp', 'di2'))
+    knowledge.append(Relation('afr','hola', 'relation','esp', 'di'))
+    knowledge.append(Relation('afl','hola', 'relation','esp2', 'di2'))
+    knowledge.append(Relation('afr','hola2', 'relation','esp', 'di'))
+    knowledge.append(Relation('afl','hola2', 'relation','esp2', 'di2'))
+    _,results = list_common_words_query('afr', 'afl')
+    assert results != []
+
+def test_most_relevant_language_relation():
+    knowledge = []
+    #create_tree(knowledge)
+    knowledge.append(Relation('afr','hola', 'relation','esp', 'di2'))
+    knowledge.append(Relation('afr','hola2', 'relation','esp', 'di'))
+    knowledge.append(Relation('afr','hola3', 'relation','esp2', 'di2'))
+    knowledge.append(Relation('afr','hola4', 'relation','esp', 'di'))
+    knowledge.append(Relation('afr','hola5', 'relation','esp2', 'di2'))
+    _,_, results = most_relevant_language_query('afr')
+    assert results != []
+
+def test_all_relevant_language_relation():
+    knowledge = []
+    #create_tree(knowledge)
+    knowledge.append(Relation('afr','hola', 'relation','esp', 'di2'))
+    knowledge.append(Relation('afr','hola2', 'relation','esp', 'di'))
+    knowledge.append(Relation('afr','hola3', 'relation','esp2', 'di2'))
+    knowledge.append(Relation('afr','hola4', 'relation','esp', 'di'))
+    knowledge.append(Relation('afr','hola5', 'relation','esp2', 'di2'))
+    _, results = percentages_relevant_language_query('afr')
+    assert results != []
