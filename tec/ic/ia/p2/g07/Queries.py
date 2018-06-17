@@ -1,6 +1,5 @@
 from tec.ic.ia.p2.g07.Relation import Relation
 from pyDatalog import pyDatalog
-from tkinter import END
 
 pyDatalog.create_terms('X, Y, Z, PX, PY, X1, Y1, X2, Y2, X3, Y3, Ancestor, Siblings, Cousins, Cousins2, Son, Uncle, Lang_related, Lang_and_origin, List_Lang_related, Common_words, Relevant_lang')
 
@@ -53,7 +52,10 @@ def language_related_query(language, word):
     return Lang_related(X, language, word)
 
 def language_and_origin_query(language, word):
-    Lang_and_origin(X, PX, PY) <= (Relation.child_lang[X] == PX) & (Relation.parent[X] == PY)
+    Son(X, PX, PY) <= (Relation.child[X]==PX) & (Relation.parent[X] == PY)
+    Ancestor(X,Y) <= Son(X1, X, Y)
+    Ancestor(X,Y) <= Son(X1, X, Z) & Ancestor(Z,Y)
+    Lang_and_origin(X, PX, PY) <= (Relation.child_lang[X] == PX) & Ancestor(X1, Y1) & (Relation.child[X] == X1) & (Y1==PY)
 
     return Lang_and_origin(X, language, word)
 
@@ -73,7 +75,9 @@ def common_words_query(language1, language2):
 
 def cont_common_words_query(language1, language2):
     answer = common_words_query(language1, language2)
-    return len(answer), answer
+    words = set([z for x,y,z in answer])
+
+    return len(words), answer
 
 def list_common_words_query(language1, language2):
     answer = common_words_query(language1, language2)
@@ -101,76 +105,3 @@ def most_relevant_language_query(language):
     percentages,answer = percentages_relevant_language_query(language)
     perc = max(percentages, key=lambda x: x[1])
     return perc,percentages, answer
-
-
-
-def clean_msg(results):
-    results.config(state='normal')
-    results.delete(1.0,END)
-    results.config(state='disabled')
-
-def searching_msg(results):
-    results.config(state='normal')
-    results.insert(END,"Buscando...\n")
-    results.config(state='disabled')
-
-def response_msg(results, query, result, status):
-    results.config(state='normal')
-    if query == 0:
-        if status == 'good':
-            results.insert(END,"\nRespuesta: Si \n"+str(result)+"\n")
-        elif status == 'bad':
-            results.insert(END,"\nRespuesta: No \n")
-    results.config(state='disabled')
-
-def search(input_first_entry, input_second_entry, p_relations, p_query, results, window, possible_querys, possible_relations, Relations):
-    first = input_first_entry.get()
-    second = input_second_entry.get()
-    relations_selected = p_relations.curselection()
-    query = p_query.curselection()
-    if first == "" or second == "" or relations_selected == [] or query == ():
-        messagebox.showwarning("Error!", "You have to select at least one relation, one query and fill the textboxes.")
-    else:
-        clean_msg(results)
-        query = query[0]
-        start = 0
-        end = 1000
-        printed = False
-        for r in relations_selected:
-            encontro = False
-            while end <= len(Relations[r]):
-                searching_msg(results)
-                print('Buscando...')
-
-                knowledge = []
-                pyDatalog.clear()
-                if end>len(Relations[r]):
-                    end = len(Relations[r])
-
-                for rel in Relations[r][start:end]:
-                    #Carga de datos
-                    child_lang, child, relation, parent_lang, parent = rel
-                    knowledge.append(Relation(child_lang, child, relation, parent_lang, parent))
-
-                #Queries
-                if query == 0: # 'Si dos palabras son heman@s'
-                    result = siblings_query(first, second)
-                elif query == 1: # 'Si dos palabras son prim@s'
-                    result = cousins_query(first, second)
-                elif query == 2: # 'Si una palabra es hij@ de otra'
-                    result = son_query(first, second)
-
-                start+=end
-                end+=end
-                if end>len(Relations[r]):
-                    end = len(Relations[r])
-
-                if result != []:
-                    response_msg(results, query, result, 'good')
-                    printed = True
-                    encontro = True
-                    break
-            if encontro:
-                break
-        if not printed:
-            response_msg(results, query, result, 'bad')

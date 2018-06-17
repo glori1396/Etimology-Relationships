@@ -51,7 +51,7 @@ def test_language_relation():
 def test_language_origin_relation():
     knowledge = []
     create_tree(knowledge)
-    results = language_and_origin_query('lang_example_1', 'Rodrigo')
+    results = language_and_origin_query('lang_example_1', 'Armando')
     assert results != []
 
 def test_list_languages_relation():
