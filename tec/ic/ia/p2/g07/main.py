@@ -5,36 +5,41 @@ from tkinter import messagebox, Tk, Label, Entry, Button, StringVar,\
     Listbox, END, EXTENDED, Scrollbar, Text
 from pyDatalog import pyDatalog
 
-Relations = []
+Relations = []  # knowledge database
 
+# Function to change cursor when program is busy
 def busy(window):
     window.config(cursor="wait")
 
 
+# Function to change cursor when program is free
 def notbusy(window):
     window.config(cursor="")
 
 
+# Function to process input file
 def db_input(input, window, possible_relations):
     global Relations
     busy(window)
     inverted = [0, 1, 2, 5]
     Relations = []
     pyDatalog.clear()
-    try:
+    try:  # If file exists
         with open(input.get(), 'r', encoding="utf8") as csvfile:
             spamreader = csv.reader(
                 csvfile, delimiter='\t', lineterminator='\n')
 
             for row in spamreader:
-                first_index = row[0].index(":")
-                second_index = row[2].index(":")
+                first_index = row[0].index(":")  # Search first word
+                second_index = row[2].index(":")  # Search second word
                 relation = row[1]
+                # If relation is generator -> generated
                 if possible_relations.index(relation) in inverted:
                     child_lang = row[2][0:second_index]
                     child = row[2][second_index+2:]
                     parent_lang = row[0][0:first_index]
                     parent = row[0][first_index+2:]
+                # If relation is generated -> generator
                 else:
                     child_lang = row[0][0:first_index]
                     child = row[0][first_index+2:]
@@ -42,7 +47,9 @@ def db_input(input, window, possible_relations):
                     parent = row[2][second_index+2:]
                 # Relations[possible_relations.index(relation)].append(
                 #     [child_lang, child, relation, parent_lang, parent])
-                Relations.append(Relation(child_lang, child, relation, parent_lang, parent))
+                # Add to knowledge database
+                Relations.append(Relation(child_lang, child,
+                                          relation, parent_lang, parent))
 
         messagebox.showinfo("Let's Continue!", "The upload is done!")
     except:
@@ -50,6 +57,8 @@ def db_input(input, window, possible_relations):
 
     notbusy(window)
 
+
+# Function to change Label according to query selected
 def onselect(evt, first_entry, second_entry):
     w = evt.widget
     index = int(w.curselection()[0])
@@ -76,11 +85,13 @@ def onselect(evt, first_entry, second_entry):
 
 # Graphic User Interface
 def ui():
+    # List of possible querys, each query changes the labels for the two words
     possible_querys = ['Si dos palabras son herman@s', 'Si dos palabras son prim@s', 'Si una palabra es hij@ de otra',
                        'Si una palabra es ti@', 'Si son prim@s y en qué grado', 'Si una palabra está relacionada con un idioma',
                        'Palabras en un idioma originadas por una palabra específica', 'Listar los idiomas relacionados con una palabra',
                        'Contar todas las palabras comunes entre dos idiomas', 'Listar todas las palabras comunes entre dos idiomas',
                        'Idioma que más aportó a otro', 'Listar todos los idiomas que aportaron a otro']
+    # List of possible relations on knowledge database
     possible_relations = ['rel:derived', 'rel:etymological_origin_of', 'rel:etymologically', 'rel:etymologically_related', 'rel:etymology',
                           'rel:has_derived_form', 'rel:is_derived_from', 'rel:variant:orthography']
 
@@ -114,7 +125,8 @@ def ui():
 
     # Results
     Label(window, text="Results:", font="Helvetica 12").place(x=20, y=420)
-    results = Text(window, font="Helvetica 12", height=18, width=105, state='disabled')
+    results = Text(window, font="Helvetica 12",
+                   height=18, width=105, state='disabled')
     results.place(x=20, y=440)
 
     # Entry
@@ -140,17 +152,19 @@ def ui():
     scrollbar.place(x=240, y=360, width=270)
     scrollbar.config(command=querys.xview)
 
-    querys.bind('<<ListboxSelect>>', lambda evt:onselect(evt, first_entry, second_entry))
+    querys.bind('<<ListboxSelect>>', lambda evt: onselect(
+        evt, first_entry, second_entry))
 
     for item in possible_querys:
         querys.insert(END, item)
 
     # Button search
-    Button(window, font="Helvetica 12", text="Search", command=lambda: search(input_first_entry,\
-            input_second_entry, relations, querys, results, window, possible_querys, possible_relations, \
-            Relations)).place(x=890, y=270)
+    Button(window, font="Helvetica 12", text="Search", command=lambda: search(input_first_entry,
+                                                                              input_second_entry, relations, querys, results, window, possible_querys, possible_relations,
+                                                                              Relations)).place(x=890, y=270)
 
     # Ejecuta la ventana
     window.mainloop()
+
 
 ui()

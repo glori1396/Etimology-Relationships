@@ -1,9 +1,13 @@
 [
   "tec/ic/ia/p2/g07/tests/test_queries.py::test_siblings_relation",
+  "tec/ic/ia/p2/g07/tests/test_queries.py::test_not_siblings_relation",
   "tec/ic/ia/p2/g07/tests/test_queries.py::test_cousins_relation",
+  "tec/ic/ia/p2/g07/tests/test_queries.py::test_not_cousins_relation",
   "tec/ic/ia/p2/g07/tests/test_queries.py::test_cousins_2_level_relation",
   "tec/ic/ia/p2/g07/tests/test_queries.py::test_son_relation",
+  "tec/ic/ia/p2/g07/tests/test_queries.py::test_not_son_relation",
   "tec/ic/ia/p2/g07/tests/test_queries.py::test_uncle_relation",
+  "tec/ic/ia/p2/g07/tests/test_queries.py::test_not_uncle_relation",
   "tec/ic/ia/p2/g07/tests/test_queries.py::test_language_relation",
   "tec/ic/ia/p2/g07/tests/test_queries.py::test_language_origin_relation",
   "tec/ic/ia/p2/g07/tests/test_queries.py::test_list_languages_relation",
