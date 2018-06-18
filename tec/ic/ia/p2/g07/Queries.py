@@ -30,7 +30,7 @@ def cousins_query(first, second):
         X1, Y1) & (X == X1) & (Y == Y1) & (X == Z)
 
     Cousins(X, Y) <= Siblings(
-        X1, Y1, Relation.parent[X], Relation.parent[Y])  # la que funciona
+        X1, Y1, Relation.parent[X], Relation.parent[Y])
     Cousins(X, Y, PX, PY, Z) <= Cousins(X, Y) & (
         Relation.child[X] == PX) & (Relation.child[Y] == PY) & (Z == -1)
     Cousins(X, Y, PX, PY, Z) <= Ancestor(X1, Y1) & Cousins(X2, Y2) & (Relation.child[X] == X1)\
@@ -142,12 +142,16 @@ def percentages_relevant_language_query(language):
             amount[i[1]] = i[2]+1
     total = sum(amount.values())
     percentages = [[k, v*100/total] for k, v in amount.items()]
-
+    percentages = sorted(percentages, key=lambda x: x[1])[::-1]
     return percentages, answer
 
 
 # Query to solve: calculates wich is the most relevant language given by percentages_relevant_language_query
 def most_relevant_language_query(language):
     percentages, answer = percentages_relevant_language_query(language)
-    perc = max(percentages, key=lambda x: x[1])
-    return perc, percentages, answer
+    perc = percentages[0]
+    all_perc = percentages
+    if perc[0] == language:
+        percentages.remove(perc)
+        perc = percentages[0]
+    return perc, all_perc, answer

@@ -131,7 +131,7 @@ def test_most_relevant_language_relation():
     max_p, perc, results = most_relevant_language_query('afr')
     print(max_p, perc)
     assert max_p == ['esp', 60.0]
-    assert perc == [['esp2', 40.0], ['esp', 60.0]]
+    assert perc == [['esp', 60.0], ['esp2', 40.0]]
     assert results != []
 
 
@@ -143,5 +143,5 @@ def test_all_relevant_language_relation():
     knowledge.append(Relation('afr', 'hola4', 'relation', 'esp', 'di'))
     knowledge.append(Relation('afr', 'hola5', 'relation', 'esp2', 'di2'))
     perc, results = percentages_relevant_language_query('afr')
-    assert perc == [['esp2', 40.0], ['esp', 60.0]]
+    assert perc == [['esp', 60.0],['esp2', 40.0]]
     assert results != []
