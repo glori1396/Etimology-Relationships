@@ -242,7 +242,7 @@ Son(X, PX, PY) <= (Relation.child[X] == PX) & (Relation.parent[X] == PY)
 
 For the uncle-nephew query this is an interesting result:
 
-*
+* The word *sawhorses* and *seahorses*, are nephews of the word *horseshit*.
 
 And for the implementation details:
 
